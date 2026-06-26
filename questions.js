@@ -50,7 +50,7 @@ const CURATED_QUESTIONS = [
   {
     question: "Which team drafted Kobe Bryant in the 1996 NBA Draft before trading him to the Lakers?",
     options: ["Charlotte Hornets", "Los Angeles Clippers", "Boston Celtics", "Philadelphia 76ers"],
-    answer: "Charlotte Hornets",
+    answer: "Kobe Bryant",
     category: "DRAFT"
   },
   {
@@ -90,8 +90,8 @@ const CURATED_QUESTIONS = [
     category: "NBA HISTORY"
   },
   {
-    question: "Who is the only player to win the MVP award unanimously?",
-    options: ["Stephen Curry", "Michael Jordan", "LeBron James", "Shaquille O'Neal"],
+    question: "Who is the only unanimous MVP in NBA history, winning all 131 first-place votes in 2016?",
+    options: ["LeBron James", "Stephen Curry", "Michael Jordan", "Shaquille O'Neal"],
     answer: "Stephen Curry",
     category: "AWARDS"
   },
@@ -485,7 +485,7 @@ const ProceduralGenerator = {
     ];
     
     const distractors = divisions.filter(d => d !== correctAnswer);
-    const options = divisions.filter(d => d !== correctAnswer);
+    const options = shuffleArray([correctAnswer, ...distractors]).slice(0, 4);
     
     // Ensure the correct answer is definitely in the options (it will be, since we took correctAnswer + 3 distractors)
     const finalOptions = shuffleArray([correctAnswer, ...shuffleArray(distractors).slice(0, 3)]);
