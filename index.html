@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NBA Trivia Showdown: An endless NBA trivia game featuring a live 1-on-1 physics-based basketball simulation underneath the answer box. Correct answers score for you, incorrect answers score for the opponent!">
+  <title>NBA Trivia Showdown - 1v1 Basketball Hoop Battle</title>
+  <!-- Google Fonts for Modern Retro/Neon Sporty Aesthetics -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient background glowing blobs -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+
+  <div class="app-container">
+    <!-- Header with Retro-Modern LED Scoreboard -->
+    <header class="scoreboard-container">
+      <div class="scoreboard">
+        <div class="team-panel home-panel">
+          <div class="team-label">HOME</div>
+          <div id="home-score" class="score-display">00</div>
+          <div class="team-sub">YOU</div>
+        </div>
+
+        <div class="middle-panel">
+          <div class="game-info">
+            <span class="game-period">QTR 4</span>
+            <div class="clock-display" id="game-clock">12:00</div>
+          </div>
+          <div class="streak-container">
+            <div class="streak-label">STREAK</div>
+            <div id="streak-counter" class="streak-number">0</div>
+          </div>
+        </div>
+
+        <div class="team-panel away-panel">
+          <div class="team-label">AWAY</div>
+          <div id="away-score" class="score-display">00</div>
+          <div class="team-sub">OPPONENT</div>
+        </div>
+      </div>
+      
+      <!-- Mini stats bar -->
+      <div class="stats-row">
+        <div class="stat-item">
+          <span class="stat-label">HIGH STREAK:</span>
+          <span id="high-streak" class="stat-value">0</span>
+        </div>
+        <div class="stat-item flex-grow"></div>
+        <div class="stat-item">
+          <span class="stat-label">ACCURACY:</span>
+          <span id="accuracy-display" class="stat-value">0%</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Game Area -->
+    <main class="game-main">
+      <!-- Glassmorphism Trivia Card -->
+      <section class="trivia-section">
+        <div class="trivia-card" id="trivia-card">
+          <!-- Question Header/Progress -->
+          <div class="trivia-header">
+            <span id="question-category" class="question-badge">NBA HISTORY</span>
+            <span id="question-count" class="question-tracker">Q# 1</span>
+          </div>
+
+          <!-- Question Text -->
+          <div class="question-container">
+            <h1 id="question-text" class="question-title">Preparing your first draft pick... Who will go #1?</h1>
+          </div>
+
+          <!-- Options Container -->
+          <div class="options-grid" id="options-grid">
+            <!-- Dynamically populated via JS -->
+            <button class="option-btn" disabled>Option 1</button>
+            <button class="option-btn" disabled>Option 2</button>
+            <button class="option-btn" disabled>Option 3</button>
+            <button class="option-btn" disabled>Option 4</button>
+          </div>
+
+          <!-- Timer Bar -->
+          <div class="timer-track">
+            <div id="timer-bar" class="timer-fill"></div>
+          </div>
+
+          <!-- Question Feedback Overlay / Next Prompt -->
+          <div id="feedback-overlay" class="feedback-overlay hidden">
+            <span id="feedback-message" class="feedback-text">CORRECT!</span>
+            <span class="feedback-sub">Next question loading...</span>
+          </div>
+
+          <!-- Game Over Overlay -->
+          <div id="game-over-overlay" class="feedback-overlay hidden">
+            <span id="game-over-title" class="feedback-text">GAME OVER</span>
+            <span id="game-over-subtitle" class="feedback-sub">You Win!</span>
+            <button id="game-over-btn" class="option-btn" style="margin-top: 1.25rem; width: 100%; max-width: 220px; font-weight: 600; text-align: center; justify-content: center;">Play Again</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1-on-1 Canvas Court Area -->
+      <section class="court-section">
+        <div class="canvas-wrapper">
+          <canvas id="basketball-canvas" width="800" height="360"></canvas>
+          <div class="court-overlay-text" id="court-announcement">1-ON-1 IN PROGRESS</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Commentary Ticker Footer -->
+    <footer class="commentary-ticker-container">
+      <div class="commentary-icon">💬</div>
+      <div class="commentary-box">
+        <div id="commentary-text" class="commentary-text">Tip-off is about to begin. Answer trivia to control your player!</div>
+      </div>
+      <div class="audio-controls">
+        <button id="mute-btn" class="icon-btn" title="Toggle Sound">
+          <svg id="volume-icon" viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.07,19.86 21,16.28 21,12C21,7.72 18.07,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z" />
+          </svg>
+        </button>
+        <button id="restart-btn" class="icon-btn" title="Reset Game">
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z" />
+          </svg>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Loading scripts -->
+  <script src="questions.js?v=8"></script>
+  <script src="basketball.js?v=8"></script>
+  <script src="app.js?v=8"></script>
+</body>
+</html>
